@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PulsaKilat — Auto Order PPOB</title>
+<style>
+  /* ===========================================================
+     TOKEN DESAIN
+     - Warna utama: navy gelap (kepercayaan, digital) + kuning listrik
+       (token/lightning) sebagai aksen, bukan warna default AI.
+     - Font: Space Grotesk untuk judul (kesan digital/teknikal),
+       Inter untuk teks isi (mudah dibaca di HP).
+     =========================================================== */
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --navy-950:#0c1220;
+    --navy-900:#111a2e;
+    --navy-800:#1a2740;
+    --navy-700:#26365a;
+    --volt:#f4c430;      /* kuning listrik - aksen "token" */
+    --volt-dim:#8a7a2c;
+    --paper:#eef1f7;
+    --muted:#8592ad;
+    --ok:#3ecf8e;
+    --line:#28345020;
+    --radius:10px;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--navy-950);
+    color:var(--paper);
+    font-family:'Inter',system-ui,sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Space Grotesk',sans-serif;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    padding:28px 20px 22px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .bolt{
+    width:34px;height:34px;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--volt);
+    border-radius:8px;
+    color:var(--navy-950);
+    font-weight:700;
+    font-size:18px;
+  }
+  header h1{font-size:20px;color:var(--paper);}
+  header p{margin:2px 0 0;font-size:13px;color:var(--muted);}
+
+  main{max-width:640px;margin:0 auto;padding:20px 16px 60px;}
+
+  /* ---------- Kategori (tabs) ---------- */
+  .kategori-wrap{
+    display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:18px;
+    scrollbar-width:none;
+  }
+  .kategori-wrap::-webkit-scrollbar{display:none;}
+  .kategori-btn{
+    flex:none;
+    padding:9px 16px;
+    border-radius:999px;
+    border:1px solid var(--navy-700);
+    background:var(--navy-900);
+    color:var(--muted);
+    font-family:'Inter',sans-serif;
+    font-size:13.5px;
+    font-weight:600;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:background .15s,color .15s,border-color .15s;
+  }
+  .kategori-btn.aktif{
+    background:var(--volt);
+    border-color:var(--volt);
+    color:var(--navy-950);
+  }
+
+  /* ---------- Kartu produk ---------- */
+  .produk-grid{display:flex;flex-direction:column;gap:10px;}
+  .produk-card{
+    display:flex;justify-content:space-between;align-items:center;
+    gap:12px;
+    background:var(--navy-900);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:14px 16px;
+    cursor:pointer;
+    transition:border-color .15s;
+  }
+  .produk-card:hover{border-color:var(--volt-dim);}
+  .produk-card.dipilih{border-color:var(--volt);background:var(--navy-800);}
+  .produk-info h3{font-size:15px;font-weight:600;color:var(--paper);}
+  .produk-info span{display:block;font-size:12.5px;color:var(--muted);margin-top:2px;}
+  .produk-harga{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:var(--volt);white-space:nowrap;}
+  .stok-habis{opacity:.4;pointer-events:none;}
+  .stok-habis .produk-harga{color:var(--muted);}
+
+  /* ---------- Form order ---------- */
+  section.blok{margin-top:32px;}
+  .blok h2{font-size:16px;margin-bottom:12px;color:var(--paper);}
+  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:500;}
+  input, select{
+    width:100%;
+    padding:11px 13px;
+    border-radius:8px;
+    border:1px solid var(--navy-700);
+    background:var(--navy-900);
+    color:var(--paper);
+    font-size:14.5px;
+    font-family:'Inter',sans-serif;
+    margin-bottom:14px;
+  }
+  input:focus, select:focus{outline:2px solid var(--volt);outline-offset:1px;}
+  input::placeholder{color:var(--muted);}
+
+  /* ---------- Ringkasan total ---------- */
+  .ringkasan{
+    background:var(--navy-900);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px;
+    margin-top:8px;
+  }
+  .baris{display:flex;justify-content:space-between;font-size:13.5px;color:var(--muted);padding:4px 0;}
+  .baris.total{
+    border-top:1px solid var(--line);
+    margin-top:8px;padding-top:10px;
+    font-size:16px;font-weight:700;color:var(--paper);
+  }
+  .baris.total b{color:var(--volt);font-family:'Space Grotesk',sans-serif;}
+
+  .tombol-kirim{
+    width:100%;
+    margin-top:16px;
+    padding:14px;
+    border:none;
+    border-radius:8px;
+    background:var(--volt);
+    color:var(--navy-950);
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:15px;
+    cursor:pointer;
+  }
+  .tombol-kirim:disabled{background:var(--navy-700);color:var(--muted);cursor:not-allowed;}
+  .catatan-error{color:#ff6b6b;font-size:12.5px;margin-top:-8px;margin-bottom:12px;display:none;}
+
+  /* ---------- Halaman terima kasih ---------- */
+  #layar-suksek{display:none;text-align:center;padding:60px 20px;}
+  #layar-suksek .ceklis{
+    width:64px;height:64px;border-radius:50%;
+    background:var(--ok);
+    color:var(--navy-950);
+    font-size:30px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 20px;
+  }
+  #layar-suksek h2{font-size:19px;margin-bottom:8px;}
+  #layar-suksek p{color:var(--muted);font-size:14px;max-width:340px;margin:0 auto;}
+  #layar-suksek .kode{
+    margin-top:18px;font-family:'Space Grotesk',sans-serif;
+    color:var(--volt);font-size:14px;letter-spacing:.05em;
+  }
+  .tombol-lagi{
+    margin-top:24px;background:transparent;border:1px solid var(--navy-700);
+    color:var(--paper);padding:10px 18px;border-radius:8px;font-size:13.5px;cursor:pointer;
+  }
+
+  footer{text-align:center;padding:20px;color:var(--muted);font-size:12px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bolt">⚡</div>
+  <div>
+    <h1>PulsaKilat</h1>
+    <p>Isi pulsa, token &amp; tagihan — proses cepat lewat WhatsApp</p>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ HALAMAN UTAMA (katalog + form) ============ -->
+  <div id="layar-utama">
+
+    <!-- Tab kategori: diisi otomatis oleh JavaScript dari data produk -->
+    <div class="kategori-wrap" id="kategoriWrap"></div>
+
+    <!-- Daftar produk sesuai kategori aktif -->
+    <div class="produk-grid" id="produkGrid"></div>
+
+    <!-- ---------- Form pemesanan ---------- -->
+    <section class="blok">
+      <h2>Data Pemesanan</h2>
+
+      <label for="produkTerpilih">Produk dipilih</label>
+      <input type="text" id="produkTerpilih" placeholder="Pilih produk di atas dulu" disabled>
+
+      <label for="nomorTujuan">Nomor HP / ID Pelanggan tujuan</label>
+      <input type="text" id="nomorTujuan" placeholder="Contoh: 081234567890">
+
+      <label for="jumlah">Jumlah pesanan</label>
+      <input type="number" id="jumlah" min="1" value="1">
+
+      <label for="namaPembeli">Nama pemesan</label>
+      <input type="text" id="namaPembeli" placeholder="Nama kamu">
+
+      <label for="kontakPembeli">Nomor WhatsApp kamu (untuk konfirmasi)</label>
+      <input type="text" id="kontakPembeli" placeholder="Contoh: 081234567890">
+
+      <p class="catatan-error" id="pesanError">Lengkapi dulu semua data di atas ya.</p>
+
+      <div class="ringkasan">
+        <div class="baris"><span>Harga satuan</span><span id="ringkasHarga">Rp0</span></div>
+        <div class="baris"><span>Jumlah</span><span id="ringkasJumlah">1</span></div>
+        <div class="baris total"><span>Total bayar</span><b id="ringkasTotal">Rp0</b></div>
+      </div>
+
+      <button class="tombol-kirim" id="tombolPesan">Pesan via WhatsApp</button>
+    </section>
+  </div>
+
+  <!-- ============ HALAMAN TERIMA KASIH ============ -->
+  <div id="layar-suksek">
+    <div class="ceklis">✓</div>
+    <h2>Pesanan terkirim!</h2>
+    <p>Pesanan kamu sudah kami terima dan diteruskan ke WhatsApp admin. Tunggu konfirmasi proses ya.</p>
+    <div class="kode" id="kodePesanan"></div>
+    <button class="tombol-lagi" onclick="pesanLagi()">Buat pesanan lain</button>
+  </div>
+
+</main>
+
+<footer>PulsaKilat · Auto Order System</footer>
+
+<script>
+/* ===========================================================
+   "DATABASE" PRODUK
+   ------------------------------------------------------------
+   Ini adalah cara paling sederhana menyimpan data untuk pemula:
+   sebuah array JavaScript. Setiap kali kamu mau tambah / ubah
+   harga / stok produk, cukup edit bagian ini saja.
+
+   Kalau nanti sudah mahir dan ingin admin bisa update harga
+   tanpa buka kode, kamu bisa ganti bagian ini dengan data yang
+   diambil dari Google Sheets (lihat penjelasan di chat).
+   =========================================================== */
+const DAFTAR_PRODUK = [
+  // ---- Pulsa ----
+  { id:'p1', kategori:'Pulsa', nama:'Pulsa Telkomsel 10rb', keterangan:'Aktif 30 hari', harga:12000, stok:50 },
+  { id:'p2', kategori:'Pulsa', nama:'Pulsa Telkomsel 25rb', keterangan:'Aktif 30 hari', harga:27000, stok:50 },
+  { id:'p3', kategori:'Pulsa', nama:'Pulsa Indosat 20rb', keterangan:'Aktif 30 hari', harga:21000, stok:0 },
+
+  // ---- Paket Data ----
+  { id:'d1', kategori:'Paket Data', nama:'XL 3GB / 30 hari', keterangan:'Kuota utama', harga:35000, stok:20 },
+  { id:'d2', kategori:'Paket Data', nama:'Telkomsel 5GB / 30 hari', keterangan:'Kuota flash', harga:55000, stok:20 },
+
+  // ---- Token PLN ----
+  { id:'t1', kategori:'Token PLN', nama:'Token Listrik 20rb', keterangan:'Kode 20 digit', harga:22500, stok:100 },
+  { id:'t2', kategori:'Token PLN', nama:'Token Listrik 50rb', keterangan:'Kode 20 digit', harga:52500, stok:100 },
+  { id:'t3', kategori:'Token PLN', nama:'Token Listrik 100rb', keterangan:'Kode 20 digit', harga:102500, stok:100 },
+
+  // ---- Voucher Game ----
+  { id:'g1', kategori:'Voucher Game', nama:'Mobile Legends 86 Diamond', keterangan:'Masuk otomatis ke ID', harga:23000, stok:30 },
+  { id:'g2', kategori:'Voucher Game', nama:'Free Fire 70 Diamond', keterangan:'Masuk otomatis ke ID', harga:11000, stok:30 },
+
+  // ---- PDAM ----
+  { id:'w1', kategori:'PDAM', nama:'Bayar Tagihan PDAM', keterangan:'Cek nomor pelanggan dulu', harga:5000, stok:999 },
+];
+
+// GANTI nomor ini dengan nomor WhatsApp admin/toko kamu (format: 62xxxxxxxxxx, tanpa + atau 0 di depan)
+const NOMOR_ADMIN_WA = '6281234567890';
+
+/* ===========================================================
+   STATE (data yang sedang berjalan di layar)
+   =========================================================== */
+let kategoriAktif = DAFTAR_PRODUK[0].kategori;
+let produkDipilih = null;
+
+/* ===========================================================
+   RENDER TAB KATEGORI
+   =========================================================== */
+function renderKategori(){
+  const wrap = document.getElementById('kategoriWrap');
+  const daftarKategori = [...new Set(DAFTAR_PRODUK.map(p => p.kategori))];
+
+  wrap.innerHTML = daftarKategori.map(k => `
+    <button class="kategori-btn ${k === kategoriAktif ? 'aktif' : ''}" data-kategori="${k}">
+      ${k}
+    </button>
+  `).join('');
+
+  // pasang event klik ke tiap tombol kategori
+  wrap.querySelectorAll('.kategori-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      kategoriAktif = btn.dataset.kategori;
+      renderKategori();
+      renderProduk();
+    });
+  });
+}
+
+/* ===========================================================
+   RENDER DAFTAR PRODUK sesuai kategori yang aktif
+   =========================================================== */
+function renderProduk(){
+  const grid = document.getElementById('produkGrid');
+  const produkKategoriIni = DAFTAR_PRODUK.filter(p => p.kategori === kategoriAktif);
+
+  grid.innerHTML = produkKategoriIni.map(p => `
+    <div class="produk-card ${p.stok === 0 ? 'stok-habis' : ''} ${produkDipilih && produkDipilih.id === p.id ? 'dipilih' : ''}"
+         data-id="${p.id}">
+      <div class="produk-info">
+        <h3>${p.nama}</h3>
+        <span>${p.stok === 0 ? 'Stok habis' : p.keterangan + ' · stok ' + p.stok}</span>
+      </div>
+      <div class="produk-harga">Rp${p.harga.toLocaleString('id-ID')}</div>
+    </div>
+  `).join('');
+
+  grid.querySelectorAll('.produk-card:not(.stok-habis)').forEach(card => {
+    card.addEventListener('click', () => {
+      produkDipilih = DAFTAR_PRODUK.find(p => p.id === card.dataset.id);
+      renderProduk();
+      hitungTotal();
+    });
+  });
+}
+
+/* ===========================================================
+   HITUNG TOTAL OTOMATIS
+   Dipanggil setiap kali produk atau jumlah berubah.
+   =========================================================== */
+function hitungTotal(){
+  const jumlah = Math.max(1, parseInt(document.getElementById('jumlah').value) || 1);
+  const harga = produkDipilih ? produkDipilih.harga : 0;
+  const total = harga * jumlah;
+
+  document.getElementById('produkTerpilih').value = produkDipilih ? produkDipilih.nama : '';
+  document.getElementById('ringkasHarga').textContent = 'Rp' + harga.toLocaleString('id-ID');
+  document.getElementById('ringkasJumlah').textContent = jumlah;
+  document.getElementById('ringkasTotal').textContent = 'Rp' + total.toLocaleString('id-ID');
+}
+
+document.getElementById('jumlah').addEventListener('input', hitungTotal);
+
+/* ===========================================================
+   KIRIM PESANAN
+   Karena ini website sederhana tanpa server, "konfirmasi
+   otomatis" dilakukan dengan cara membuka WhatsApp berisi
+   pesan yang sudah terisi otomatis (nama, produk, nomor
+   tujuan, total). Admin tinggal tekan kirim di WhatsApp-nya.
+   =========================================================== */
+document.getElementById('tombolPesan').addEventListener('click', () => {
+  const nomorTujuan = document.getElementById('nomorTujuan').value.trim();
+  const jumlah = document.getElementById('jumlah').value;
+  const namaPembeli = document.getElementById('namaPembeli').value.trim();
+  const kontakPembeli = document.getElementById('kontakPembeli').value.trim();
+  const errorBox = document.getElementById('pesanError');
+
+  // Validasi sederhana: pastikan semua data terisi
+  if(!produkDipilih || !nomorTujuan || !namaPembeli || !kontakPembeli){
+    errorBox.style.display = 'block';
+    return;
+  }
+  errorBox.style.display = 'none';
+
+  const total = produkDipilih.harga * jumlah;
+  const kodePesanan = 'PK-' + Date.now().toString().slice(-6);
+
+  // Susun teks pesan WhatsApp
+  const pesan = [
+    `*PESANAN BARU - ${kodePesanan}*`,
+    `Produk: ${produkDipilih.nama}`,
+    `Kategori: ${produkDipilih.kategori}`,
+    `Nomor/ID tujuan: ${nomorTujuan}`,
+    `Jumlah: ${jumlah}`,
+    `Total: Rp${total.toLocaleString('id-ID')}`,
+    ``,
+    `Nama pemesan: ${namaPembeli}`,
+    `WhatsApp pemesan: ${kontakPembeli}`
+  ].join('\n');
+
+  const linkWA = `https://wa.me/${NOMOR_ADMIN_WA}?text=${encodeURIComponent(pesan)}`;
+
+  // Buka WhatsApp di tab baru
+  window.open(linkWA, '_blank');
+
+  // Tampilkan halaman "terima kasih"
+  document.getElementById('kodePesanan').textContent = 'Kode pesanan: ' + kodePesanan;
+  document.getElementById('layar-utama').style.display = 'none';
+  document.getElementById('layar-suksek').style.display = 'block';
+});
+
+/* ===========================================================
+   TOMBOL "Buat pesanan lain" -> reset form ke kondisi awal
+   =========================================================== */
+function pesanLagi(){
+  produkDipilih = null;
+  document.getElementById('nomorTujuan').value = '';
+  document.getElementById('jumlah').value = 1;
+  document.getElementById('namaPembeli').value = '';
+  document.getElementById('kontakPembeli').value = '';
+  renderProduk();
+  hitungTotal();
+  document.getElementById('layar-suksek').style.display = 'none';
+  document.getElementById('layar-utama').style.display = 'block';
+}
+
+/* ===========================================================
+   JALANKAN PERTAMA KALI SAAT HALAMAN DIBUKA
+   =========================================================== */
+renderKategori();
+renderProduk();
+hitungTotal();
+</script>
+
+</body>
+</html>
