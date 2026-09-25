@@ -286,7 +286,7 @@ const DAFTAR_PRODUK = [
 ];
 
 // GANTI nomor ini dengan nomor WhatsApp admin/toko kamu (format: 62xxxxxxxxxx, tanpa + atau 0 di depan)
-const NOMOR_ADMIN_WA = '6281234567890';
+const NOMOR_ADMIN_WA = '6283171405256';
 
 /* ===========================================================
    STATE (data yang sedang berjalan di layar)
@@ -395,10 +395,10 @@ document.getElementById('tombolPesan').addEventListener('click', () => {
     `Total: Rp${total.toLocaleString('id-ID')}`,
     ``,
     `Nama pemesan: ${namaPembeli}`,
-    `WhatsApp pemesan: ${kontakPembeli}`
+    `WhatsApp pemesan: ${buyer}`
   ].join('\n');
 
-  const linkWA = `https://wa.me/${NOMOR_ADMIN_WA}?text=${encodeURIComponent(pesan)}`;
+  const linkWA = `https://wa.me/${6283171505256}?text=${encodeURIComponent(pesan)}`;
 
   // Buka WhatsApp di tab baru
   window.open(linkWA, '_blank');
