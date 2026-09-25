@@ -2,435 +2,122 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZT DIGITAL PPOB — Isi pulsa murah</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>ZT Digital PPOB — Isi Pulsa & Bayar Tagihan</title>
 <style>
-  /* ===========================================================
-     TOKEN DESAIN
-     - Warna utama: navy gelap (kepercayaan, digital) + kuning listrik
-       (token/lightning) sebagai aksen, bukan warna default AI.
-     - Font: Space Grotesk untuk judul (kesan digital/teknikal),
-       Inter untuk teks isi (mudah dibaca di HP).
-     =========================================================== */
-  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600&display=swap');
 
-  :root{
-    --navy-950:#0c1220;
-    --navy-900:#111a2e;
-    --navy-800:#1a2740;
-    --navy-700:#26365a;
-    --volt:#f4c430;      /* kuning listrik - aksen "token" */
-    --volt-dim:#8a7a2c;
-    --paper:#eef1f7;
-    --muted:#8592ad;
-    --ok:#3ecf8e;
-    --line:#28345020;
-    --radius:10px;
-  }
+:root{
+  --bg:#0a0e1a; --surface:#121a2c; --surface-2:#1b2540; --surface-3:#242f52;
+  --cyan:#2dd4bf; --blue:#3b82f6; --text:#eef2f8; --muted:#7c88a6;
+  --ok:#34d399; --line:#ffffff12; --radius:16px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;}
+h1,h2,h3{font-family:'Manrope',sans-serif;margin:0;}
+button,input{font-family:'Inter',sans-serif;}
+.app{max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:78px;position:relative;}
 
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{
-    background:var(--navy-950);
-    color:var(--paper);
-    font-family:'Inter',system-ui,sans-serif;
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased;
-  }
-  h1,h2,h3{
-    font-family:'Space Grotesk',sans-serif;
-    margin:0;
-    letter-spacing:-0.01em;
-  }
+/* ---------- Header ---------- */
+header{padding:22px 18px 16px;display:flex;align-items:center;gap:12px;}
+.logo{width:40px;height:40px;border-radius:12px;overflow:hidden;flex:none;background:var(--surface-2);}
+.logo img{width:100%;height:100%;object-fit:cover;}
+header .brand{flex:1;min-width:0;}
+header .brand p.greet{margin:0;font-size:12px;color:var(--muted);}
+header .brand h1{font-size:16.5px;margin-top:2px;}
+.btn-refresh{background:var(--surface);border:1px solid var(--line);border-radius:10px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;color:var(--cyan);cursor:pointer;flex:none;}
+.btn-refresh.spin svg{animation:spin .6s linear;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-  /* ---------- Header ---------- */
-  header{
-    padding:28px 20px 22px;
-    border-bottom:1px solid var(--line);
-    display:flex;
-    align-items:center;
-    gap:12px;
-  }
-  .bolt{
-    width:34px;height:34px;flex:none;
-    display:flex;align-items:center;justify-content:center;
-    background:var(--volt);
-    border-radius:8px;
-    color:var(--navy-950);
-    font-weight:700;
-    font-size:18px;
-  }
-  header h1{font-size:20px;color:var(--paper);}
-  header p{margin:2px 0 0;font-size:13px;color:var(--muted);}
+/* ---------- Kartu ringkasan ---------- */
+.ringkasan-card{margin:0 18px 16px;background:linear-gradient(135deg,var(--surface-2),var(--surface-3));border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;display:flex;justify-content:space-between;}
+.ringkasan-card .kolom span{display:block;font-size:11.5px;color:var(--muted);margin-bottom:4px;}
+.ringkasan-card .kolom b{font-family:'Manrope',sans-serif;font-size:17px;color:var(--cyan);}
+.ringkasan-card .kolom.kanan{text-align:right;}
 
-  main{max-width:640px;margin:0 auto;padding:20px 16px 60px;}
+/* ---------- Menu cepat ---------- */
+.quick-row{display:flex;justify-content:space-between;padding:0 18px 18px;gap:6px;}
+.quick{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;cursor:pointer;color:var(--text);}
+.quick .bulat{width:46px;height:46px;border-radius:14px;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:19px;}
+.quick.aktif .bulat{background:linear-gradient(135deg,var(--blue),var(--cyan));border-color:transparent;}
+.quick span{font-size:11px;color:var(--muted);font-weight:600;}
 
-  /* ---------- Kategori (tabs) ---------- */
-  .kategori-wrap{
-    display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:18px;
-    scrollbar-width:none;
-  }
-  .kategori-wrap::-webkit-scrollbar{display:none;}
-  .kategori-btn{
-    flex:none;
-    padding:9px 16px;
-    border-radius:999px;
-    border:1px solid var(--navy-700);
-    background:var(--navy-900);
-    color:var(--muted);
-    font-family:'Inter',sans-serif;
-    font-size:13.5px;
-    font-weight:600;
-    cursor:pointer;
-    white-space:nowrap;
-    transition:background .15s,color .15s,border-color .15s;
-  }
-  .kategori-btn.aktif{
-    background:var(--volt);
-    border-color:var(--volt);
-    color:var(--navy-950);
-  }
+/* ---------- Banner promo ---------- */
+.banner{margin:0 18px 20px;border-radius:var(--radius);padding:20px;background:linear-gradient(120deg,var(--blue),var(--cyan));position:relative;overflow:hidden;color:#04121a;}
+.banner h3{font-size:15.5px;font-weight:800;}
+.banner p{margin:4px 0 0;font-size:12.5px;opacity:.85;max-width:75%;}
+.banner .ikon-besar{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:42px;opacity:.35;}
 
-  /* ---------- Kartu produk ---------- */
-  .produk-grid{display:flex;flex-direction:column;gap:10px;}
-  .produk-card{
-    display:flex;justify-content:space-between;align-items:center;
-    gap:12px;
-    background:var(--navy-900);
-    border:1px solid var(--line);
-    border-radius:var(--radius);
-    padding:14px 16px;
-    cursor:pointer;
-    transition:border-color .15s;
-  }
-  .produk-card:hover{border-color:var(--volt-dim);}
-  .produk-card.dipilih{border-color:var(--volt);background:var(--navy-800);}
-  .produk-info h3{font-size:15px;font-weight:600;color:var(--paper);}
-  .produk-info span{display:block;font-size:12.5px;color:var(--muted);margin-top:2px;}
-  .produk-harga{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:var(--volt);white-space:nowrap;}
-  .stok-habis{opacity:.4;pointer-events:none;}
-  .stok-habis .produk-harga{color:var(--muted);}
+/* ---------- Search & chips ---------- */
+.search{margin:0 18px 14px;position:relative;}
+.search input{width:100%;padding:13px 16px 13px 42px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--text);font-size:14px;}
+.search input::placeholder{color:var(--muted);}
+.search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);}
+.search input:focus{outline:2px solid var(--cyan);outline-offset:1px;}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:0 18px 16px;scrollbar-width:none;}
+.chips::-webkit-scrollbar{display:none;}
+.chip{flex:none;padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;}
+.chip.aktif{background:linear-gradient(135deg,var(--blue),var(--cyan));color:#04121a;border-color:transparent;}
 
-  /* ---------- Form order ---------- */
-  section.blok{margin-top:32px;}
-  .blok h2{font-size:16px;margin-bottom:12px;color:var(--paper);}
-  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:500;}
-  input, select{
-    width:100%;
-    padding:11px 13px;
-    border-radius:8px;
-    border:1px solid var(--navy-700);
-    background:var(--navy-900);
-    color:var(--paper);
-    font-size:14.5px;
-    font-family:'Inter',sans-serif;
-    margin-bottom:14px;
-  }
-  input:focus, select:focus{outline:2px solid var(--volt);outline-offset:1px;}
-  input::placeholder{color:var(--muted);}
+/* ---------- Produk list ---------- */
+.produk-list{padding:0 18px;display:flex;flex-direction:column;gap:10px;}
+.produk{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px 14px;cursor:pointer;position:relative;}
+.produk:active{background:var(--surface-2);}
+.produk .avatar{width:40px;height:40px;border-radius:11px;background:var(--surface-3);color:var(--cyan);display:flex;align-items:center;justify-content:center;font-family:'Manrope',sans-serif;font-weight:800;font-size:14px;flex:none;}
+.produk .info{flex:1;min-width:0;}
+.produk .info h3{font-size:14.5px;font-weight:600;}
+.produk .info span{display:block;font-size:12px;color:var(--muted);margin-top:2px;}
+.produk .harga{font-family:'Manrope',sans-serif;font-weight:800;font-size:14px;color:var(--cyan);white-space:nowrap;}
+.produk.habis{opacity:.35;pointer-events:none;}
+.fav-btn{background:none;border:none;font-size:16px;cursor:pointer;padding:0 2px;flex:none;color:var(--muted);}
+.fav-btn.aktif{color:#f4c430;}
+.kosong{text-align:center;color:var(--muted);padding:40px 20px;font-size:13.5px;}
 
-  /* ---------- Ringkasan total ---------- */
-  .ringkasan{
-    background:var(--navy-900);
-    border:1px solid var(--line);
-    border-radius:var(--radius);
-    padding:16px;
-    margin-top:8px;
-  }
-  .baris{display:flex;justify-content:space-between;font-size:13.5px;color:var(--muted);padding:4px 0;}
-  .baris.total{
-    border-top:1px solid var(--line);
-    margin-top:8px;padding-top:10px;
-    font-size:16px;font-weight:700;color:var(--paper);
-  }
-  .baris.total b{color:var(--volt);font-family:'Space Grotesk',sans-serif;}
+/* ---------- Bottom sheet order ---------- */
+.overlay{position:fixed;inset:0;background:#000a;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20;}
+.overlay.show{opacity:1;pointer-events:auto;}
+.sheet{position:fixed;left:0;right:0;bottom:-100%;max-width:480px;margin:0 auto;background:var(--surface);border-radius:20px 20px 0 0;padding:20px 20px 24px;transition:bottom .25s ease;z-index:21;max-height:88vh;overflow-y:auto;}
+.sheet.show{bottom:0;}
+.sheet-handle{width:36px;height:4px;background:var(--line);border-radius:99px;margin:0 auto 16px;}
+.sheet h2{font-size:16px;margin-bottom:2px;}
+.sheet .sheet-harga{color:var(--cyan);font-family:'Manrope',sans-serif;font-weight:800;font-size:15px;margin-bottom:16px;}
+label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:6px;font-weight:600;}
+input.field{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);color:var(--text);font-size:14px;margin-bottom:5px;}
+input.field:focus{outline:2px solid var(--cyan);}
+.hint{font-size:11.5px;color:var(--cyan);min-height:16px;margin-bottom:12px;}
+.total-box{display:flex;justify-content:space-between;align-items:center;background:var(--surface-2);border-radius:12px;padding:13px 15px;margin:14px 0;}
+.total-box span{font-size:13px;color:var(--muted);}
+.total-box b{font-family:'Manrope',sans-serif;font-size:17px;color:var(--text);}
+.btn-kirim{width:100%;padding:15px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--cyan));color:#04121a;font-family:'Manrope',sans-serif;font-weight:800;font-size:14.5px;cursor:pointer;}
+.err{color:#f87171;font-size:12px;margin-bottom:10px;display:none;}
 
-  .tombol-kirim{
-    width:100%;
-    margin-top:16px;
-    padding:14px;
-    border:none;
-    border-radius:8px;
-    background:var(--volt);
-    color:var(--navy-950);
-    font-family:'Space Grotesk',sans-serif;
-    font-weight:700;
-    font-size:15px;
-    cursor:pointer;
-  }
-  .tombol-kirim:disabled{background:var(--navy-700);color:var(--muted);cursor:not-allowed;}
-  .catatan-error{color:#ff6b6b;font-size:12.5px;margin-top:-8px;margin-bottom:12px;display:none;}
+/* ---------- Riwayat ---------- */
+.riwayat-item{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 18px 10px;}
+.riwayat-item .top{display:flex;justify-content:space-between;font-size:13.5px;font-weight:600;}
+.riwayat-item .meta{font-size:12px;color:var(--muted);margin-top:4px;}
+.status{font-size:11px;background:#34d39922;color:var(--ok);padding:3px 9px;border-radius:99px;font-weight:600;}
 
-  /* ---------- Halaman terima kasih ---------- */
-  #layar-suksek{display:none;text-align:center;padding:60px 20px;}
-  #layar-suksek .ceklis{
-    width:64px;height:64px;border-radius:50%;
-    background:var(--ok);
-    color:var(--navy-950);
-    font-size:30px;font-weight:700;
-    display:flex;align-items:center;justify-content:center;
-    margin:0 auto 20px;
-  }
-  #layar-suksek h2{font-size:19px;margin-bottom:8px;}
-  #layar-suksek p{color:var(--muted);font-size:14px;max-width:340px;margin:0 auto;}
-  #layar-suksek .kode{
-    margin-top:18px;font-family:'Space Grotesk',sans-serif;
-    color:var(--volt);font-size:14px;letter-spacing:.05em;
-  }
-  .tombol-lagi{
-    margin-top:24px;background:transparent;border:1px solid var(--navy-700);
-    color:var(--paper);padding:10px 18px;border-radius:8px;font-size:13.5px;cursor:pointer;
-  }
+/* ---------- Akun ---------- */
+.akun-card{margin:0 18px 14px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;text-align:center;}
+.akun-card .logo-big{width:64px;height:64px;border-radius:16px;margin:0 auto 12px;overflow:hidden;}
+.akun-card .logo-big img{width:100%;height:100%;object-fit:cover;}
+.akun-card h2{font-size:16px;}
+.akun-card p{color:var(--muted);font-size:13px;margin-top:4px;}
+.btn-wa{display:inline-block;margin-top:16px;padding:12px 22px;border-radius:99px;background:linear-gradient(135deg,var(--blue),var(--cyan));color:#04121a;font-weight:700;font-size:13.5px;text-decoration:none;}
+.info-row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);font-size:13px;margin:0 18px;}
+.info-row:last-child{border-bottom:none;}
+.info-row span:first-child{color:var(--muted);}
+.hide{display:none !important;}
 
-  footer{text-align:center;padding:20px;color:var(--muted);font-size:12px;}
+/* ---------- Bottom nav ---------- */
+nav.tabbar{position:fixed;left:0;right:0;bottom:0;max-width:480px;margin:0 auto;background:var(--surface);border-top:1px solid var(--line);display:flex;padding:8px 6px calc(8px + env(safe-area-inset-bottom,0px));z-index:15;}
+nav.tabbar button{flex:1;background:none;border:none;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:600;padding:6px 0;cursor:pointer;}
+nav.tabbar button.aktif{color:var(--cyan);}
 </style>
 </head>
 <body>
+<div class="app">
 
-<header>
-  <div class="bolt">⚡</div>
-  <div>
-    <h1>ZT DIGITAL PPOB</h1>
-    <p>Top up game , isi pulsa, token &amp; tagihan — proses cepat lewat WhatsApp</p>
-  </div>
-</header>
-
-<main>
-
-  <!-- ============ HALAMAN UTAMA (katalog + form) ============ -->
-  <div id="layar-utama">
-
-    <!-- Tab kategori: diisi otomatis oleh JavaScript dari data produk -->
-    <div class="kategori-wrap" id="kategoriWrap"></div>
-
-    <!-- Daftar produk sesuai kategori aktif -->
-    <div class="produk-grid" id="produkGrid"></div>
-
-    <!-- ---------- Form pemesanan ---------- -->
-    <section class="blok">
-      <h2>Data Pemesanan</h2>
-
-      <label for="produkTerpilih">Produk dipilih</label>
-      <input type="text" id="produkTerpilih" placeholder="Pilih produk di atas dulu" disabled>
-
-      <label for="nomorTujuan">Nomor HP / ID Pelanggan tujuan</label>
-      <input type="text" id="nomorTujuan" placeholder="Contoh: 081234567890">
-
-      <label for="jumlah">Jumlah pesanan</label>
-      <input type="number" id="jumlah" min="1" value="1">
-
-      <label for="namaPembeli">Nama pemesan</label>
-      <input type="text" id="namaPembeli" placeholder="Nama kamu">
-
-      <label for="kontakPembeli">Nomor WhatsApp kamu (untuk konfirmasi)</label>
-      <input type="text" id="kontakPembeli" placeholder="Contoh: 081234567890">
-
-      <p class="catatan-error" id="pesanError">Lengkapi dulu semua data di atas ya.</p>
-
-      <div class="ringkasan">
-        <div class="baris"><span>Harga satuan</span><span id="ringkasHarga">Rp0</span></div>
-        <div class="baris"><span>Jumlah</span><span id="ringkasJumlah">1</span></div>
-        <div class="baris total"><span>Total bayar</span><b id="ringkasTotal">Rp0</b></div>
-      </div>
-
-      <button class="tombol-kirim" id="tombolPesan">Pesan via WhatsApp</button>
-    </section>
-  </div>
-
-  <!-- ============ HALAMAN TERIMA KASIH ============ -->
-  <div id="layar-suksek">
-    <div class="ceklis">✓</div>
-    <h2>Pesanan terkirim!</h2>
-    <p>Pesanan kamu sudah kami terima dan diteruskan ke WhatsApp admin. Tunggu konfirmasi proses ya.</p>
-    <div class="kode" id="kodePesanan"></div>
-    <button class="tombol-lagi" onclick="pesanLagi()">Buat pesanan lain</button>
-  </div>
-
-</main>
-
-<footer>PulsaKilat · Auto Order System</footer>
-
-<script>
-/* ===========================================================
-   "DATABASE" PRODUK
-   ------------------------------------------------------------
-   Ini adalah cara paling sederhana menyimpan data untuk pemula:
-   sebuah array JavaScript. Setiap kali kamu mau tambah / ubah
-   harga / stok produk, cukup edit bagian ini saja.
-
-   Kalau nanti sudah mahir dan ingin admin bisa update harga
-   tanpa buka kode, kamu bisa ganti bagian ini dengan data yang
-   diambil dari Google Sheets (lihat penjelasan di chat).
-   =========================================================== */
-const DAFTAR_PRODUK = [
-  // ---- Pulsa ----
-  { id:'p1', kategori:'Pulsa', nama:'Pulsa Telkomsel 10rb', keterangan:'Aktif 30 hari', harga:12000, stok:50 },
-  { id:'p2', kategori:'Pulsa', nama:'Pulsa Telkomsel 25rb', keterangan:'Aktif 30 hari', harga:27000, stok:50 },
-  { id:'p3', kategori:'Pulsa', nama:'Pulsa Indosat 20rb', keterangan:'Aktif 30 hari', harga:21000, stok:0 },
-
-  // ---- Paket Data ----
-  { id:'d1', kategori:'Paket Data', nama:'XL 3GB / 30 hari', keterangan:'Kuota utama', harga:35000, stok:20 },
-  { id:'d2', kategori:'Paket Data', nama:'Telkomsel 5GB / 30 hari', keterangan:'Kuota flash', harga:55000, stok:20 },
-
-  // ---- Token PLN ----
-  { id:'t1', kategori:'Token PLN', nama:'Token Listrik 20rb', keterangan:'Kode 20 digit', harga:22500, stok:100 },
-  { id:'t2', kategori:'Token PLN', nama:'Token Listrik 50rb', keterangan:'Kode 20 digit', harga:52500, stok:100 },
-  { id:'t3', kategori:'Token PLN', nama:'Token Listrik 100rb', keterangan:'Kode 20 digit', harga:102500, stok:100 },
-
-  // ---- Voucher Game ----
-  { id:'g1', kategori:'Voucher Game', nama:'Mobile Legends 86 Diamond', keterangan:'Masuk otomatis ke ID', harga:23000, stok:30 },
-  { id:'g2', kategori:'Voucher Game', nama:'Free Fire 70 Diamond', keterangan:'Masuk otomatis ke ID', harga:11000, stok:30 },
-
-  // ---- PDAM ----
-  { id:'w1', kategori:'PDAM', nama:'Bayar Tagihan PDAM', keterangan:'Cek nomor pelanggan dulu', harga:5000, stok:999 },
-];
-
-// GANTI nomor ini dengan nomor WhatsApp admin/toko kamu (format: 62xxxxxxxxxx, tanpa + atau 0 di depan)
-const NOMOR_ADMIN_WA = '6283171405256';
-
-/* ===========================================================
-   STATE (data yang sedang berjalan di layar)
-   =========================================================== */
-let kategoriAktif = DAFTAR_PRODUK[0].kategori;
-let produkDipilih = null;
-
-/* ===========================================================
-   RENDER TAB KATEGORI
-   =========================================================== */
-function renderKategori(){
-  const wrap = document.getElementById('kategoriWrap');
-  const daftarKategori = [...new Set(DAFTAR_PRODUK.map(p => p.kategori))];
-
-  wrap.innerHTML = daftarKategori.map(k => `
-    <button class="kategori-btn ${k === kategoriAktif ? 'aktif' : ''}" data-kategori="${k}">
-      ${k}
-    </button>
-  `).join('');
-
-  // pasang event klik ke tiap tombol kategori
-  wrap.querySelectorAll('.kategori-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      kategoriAktif = btn.dataset.kategori;
-      renderKategori();
-      renderProduk();
-    });
-  });
-}
-
-/* ===========================================================
-   RENDER DAFTAR PRODUK sesuai kategori yang aktif
-   =========================================================== */
-function renderProduk(){
-  const grid = document.getElementById('produkGrid');
-  const produkKategoriIni = DAFTAR_PRODUK.filter(p => p.kategori === kategoriAktif);
-
-  grid.innerHTML = produkKategoriIni.map(p => `
-    <div class="produk-card ${p.stok === 0 ? 'stok-habis' : ''} ${produkDipilih && produkDipilih.id === p.id ? 'dipilih' : ''}"
-         data-id="${p.id}">
-      <div class="produk-info">
-        <h3>${p.nama}</h3>
-        <span>${p.stok === 0 ? 'Stok habis' : p.keterangan + ' · stok ' + p.stok}</span>
-      </div>
-      <div class="produk-harga">Rp${p.harga.toLocaleString('id-ID')}</div>
-    </div>
-  `).join('');
-
-  grid.querySelectorAll('.produk-card:not(.stok-habis)').forEach(card => {
-    card.addEventListener('click', () => {
-      produkDipilih = DAFTAR_PRODUK.find(p => p.id === card.dataset.id);
-      renderProduk();
-      hitungTotal();
-    });
-  });
-}
-
-/* ===========================================================
-   HITUNG TOTAL OTOMATIS
-   Dipanggil setiap kali produk atau jumlah berubah.
-   =========================================================== */
-function hitungTotal(){
-  const jumlah = Math.max(1, parseInt(document.getElementById('jumlah').value) || 1);
-  const harga = produkDipilih ? produkDipilih.harga : 0;
-  const total = harga * jumlah;
-
-  document.getElementById('produkTerpilih').value = produkDipilih ? produkDipilih.nama : '';
-  document.getElementById('ringkasHarga').textContent = 'Rp' + harga.toLocaleString('id-ID');
-  document.getElementById('ringkasJumlah').textContent = jumlah;
-  document.getElementById('ringkasTotal').textContent = 'Rp' + total.toLocaleString('id-ID');
-}
-
-document.getElementById('jumlah').addEventListener('input', hitungTotal);
-
-/* ===========================================================
-   KIRIM PESANAN
-   Karena ini website sederhana tanpa server, "konfirmasi
-   otomatis" dilakukan dengan cara membuka WhatsApp berisi
-   pesan yang sudah terisi otomatis (nama, produk, nomor
-   tujuan, total). Admin tinggal tekan kirim di WhatsApp-nya.
-   =========================================================== */
-document.getElementById('tombolPesan').addEventListener('click', () => {
-  const nomorTujuan = document.getElementById('nomorTujuan').value.trim();
-  const jumlah = document.getElementById('jumlah').value;
-  const namaPembeli = document.getElementById('namaPembeli').value.trim();
-  const kontakPembeli = document.getElementById('kontakPembeli').value.trim();
-  const errorBox = document.getElementById('pesanError');
-
-  // Validasi sederhana: pastikan semua data terisi
-  if(!produkDipilih || !nomorTujuan || !namaPembeli || !kontakPembeli){
-    errorBox.style.display = 'block';
-    return;
-  }
-  errorBox.style.display = 'none';
-
-  const total = produkDipilih.harga * jumlah;
-  const kodePesanan = 'PK-' + Date.now().toString().slice(-6);
-
-  // Susun teks pesan WhatsApp
-  const pesan = [
-    `*PESANAN BARU - ${kodePesanan}*`,
-    `Produk: ${produkDipilih.nama}`,
-    `Kategori: ${produkDipilih.kategori}`,
-    `Nomor/ID tujuan: ${nomorTujuan}`,
-    `Jumlah: ${jumlah}`,
-    `Total: Rp${total.toLocaleString('id-ID')}`,
-    ``,
-    `Nama pemesan: ${namaPembeli}`,
-    `WhatsApp pemesan: ${buyer}`
-  ].join('\n');
-
-  const linkWA = `https://wa.me/${6283171505256}?text=${encodeURIComponent(pesan)}`;
-
-  // Buka WhatsApp di tab baru
-  window.open(linkWA, '_blank');
-
-  // Tampilkan halaman "terima kasih"
-  document.getElementById('kodePesanan').textContent = 'Kode pesanan: ' + kodePesanan;
-  document.getElementById('layar-utama').style.display = 'none';
-  document.getElementById('layar-suksek').style.display = 'block';
-});
-
-/* ===========================================================
-   TOMBOL "Buat pesanan lain" -> reset form ke kondisi awal
-   =========================================================== */
-function pesanLagi(){
-  produkDipilih = null;
-  document.getElementById('nomorTujuan').value = '';
-  document.getElementById('jumlah').value = 1;
-  document.getElementById('namaPembeli').value = '';
-  document.getElementById('kontakPembeli').value = '';
-  renderProduk();
-  hitungTotal();
-  document.getElementById('layar-suksek').style.display = 'none';
-  document.getElementById('layar-utama').style.display = 'block';
-}
-
-/* ===========================================================
-   JALANKAN PERTAMA KALI SAAT HALAMAN DIBUKA
-   =========================================================== */
-renderKategori();
-renderProduk();
-hitungTotal();
-</script>
-
-</body>
-</html>
+  <header>
+    <div class="logo"><img src="data:image/png;base64,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
